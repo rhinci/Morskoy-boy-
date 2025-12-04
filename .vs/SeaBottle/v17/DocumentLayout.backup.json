@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E0CAF70E-7897-431F-9E02-2C687ABB9A56}|SeaBottle.csproj|c:\\users\\user\\desktop\\std\\3semestr\\oop\\seabottle\\enums\\gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0CAF70E-7897-431F-9E02-2C687ABB9A56}|SeaBottle.csproj|solutionrelative:enums\\gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\GameState.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Enums\\GameState.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E0CAF70E-7897-431F-9E02-2C687ABB9A56}|SeaBottle.csproj|c:\\users\\user\\desktop\\std\\3semestr\\oop\\seabottle\\seabottle.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{E0CAF70E-7897-431F-9E02-2C687ABB9A56}|SeaBottle.csproj|solutionrelative:seabottle.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\SeaBottle.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SeaBottle.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E0CAF70E-7897-431F-9E02-2C687ABB9A56}|SeaBottle.csproj|c:\\users\\user\\desktop\\std\\3semestr\\oop\\seabottle\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{E0CAF70E-7897-431F-9E02-2C687ABB9A56}|SeaBottle.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,8 +22,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -32,7 +36,7 @@
               "RelativeDocumentMoniker": "Enums\\GameState.cs",
               "ToolTip": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\GameState.cs",
               "RelativeToolTip": "Enums\\GameState.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-04T23:09:23.284Z",
               "EditorCaption": ""
@@ -40,15 +44,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "SeaBottle",
+              "Title": "SeaBottle.csproj",
               "DocumentMoniker": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\SeaBottle.csproj",
               "RelativeDocumentMoniker": "SeaBottle.csproj",
               "ToolTip": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\SeaBottle.csproj",
               "RelativeToolTip": "SeaBottle.csproj",
               "ViewState": "AgIAAAEAAACALnKdCRgHwA8AAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-04T23:06:28.91Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T23:06:28.91Z"
             },
             {
               "$type": "Document",
@@ -59,8 +62,7 @@
               "ToolTip": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Form1.cs [Design]",
               "RelativeToolTip": "Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T23:03:35.221Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2025-12-04T23:03:35.221Z"
             },
             {
               "$type": "Bookmark",

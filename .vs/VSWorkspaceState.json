@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Enums"
+    "\\Enums",
+    "\\Models"
   ],
-  "SelectedNode": "\\Enums\\GameState.cs",
+  "SelectedNode": "\\Models\\GameBoard.cs",
   "PreviewInSolutionExplorer": false
 }

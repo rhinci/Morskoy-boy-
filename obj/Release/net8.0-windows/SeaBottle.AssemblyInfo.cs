@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SeaBottle")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0733eed85a456be26dd27f8e16ade8ccd11c18d0")]
 [assembly: System.Reflection.AssemblyProductAttribute("SeaBottle")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SeaBottle")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

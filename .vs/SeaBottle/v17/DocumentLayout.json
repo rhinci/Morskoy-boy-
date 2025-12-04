@@ -3,6 +3,22 @@
   "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\MessageType.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Enums\\MessageType.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Models\\GameBoard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\GameBoard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Models\\Ship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Models\\Ship.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\CellState.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Enums\\CellState.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\GameState.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Enums\\GameState.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -22,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,7 +46,59 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GameBoard.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Models\\GameBoard.cs",
+              "RelativeDocumentMoniker": "Models\\GameBoard.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Models\\GameBoard.cs",
+              "RelativeToolTip": "Models\\GameBoard.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T23:28:03.133Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Ship.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Models\\Ship.cs",
+              "RelativeDocumentMoniker": "Models\\Ship.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Models\\Ship.cs",
+              "RelativeToolTip": "Models\\Ship.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T23:26:05.062Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "MessageType.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\MessageType.cs",
+              "RelativeDocumentMoniker": "Enums\\MessageType.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\MessageType.cs",
+              "RelativeToolTip": "Enums\\MessageType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T23:23:16.134Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CellState.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\CellState.cs",
+              "RelativeDocumentMoniker": "Enums\\CellState.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\CellState.cs",
+              "RelativeToolTip": "Enums\\CellState.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T23:22:08.78Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "GameState.cs",
               "DocumentMoniker": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Enums\\GameState.cs",
               "RelativeDocumentMoniker": "Enums\\GameState.cs",
@@ -43,7 +111,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "SeaBottle.csproj",
               "DocumentMoniker": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\SeaBottle.csproj",
               "RelativeDocumentMoniker": "SeaBottle.csproj",
@@ -55,7 +123,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\User\\Desktop\\std\\3semestr\\OOP\\SeaBottle\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
