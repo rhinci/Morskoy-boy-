@@ -268,5 +268,11 @@ namespace SeaBattle.Models
             _allShipsPlaced = false;
             _allShipsSunk = false;
         }
+
+
+        foreach (Ship ship in _ships)
+    {
+        ship.Reset();
     }
+}
 }

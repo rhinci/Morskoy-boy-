@@ -48,5 +48,11 @@ namespace SeaBattle.Models
         {
             _positions.Clear();
         }
+
+        public void Reset()
+        {
+            _positions.Clear();
+            _hits.Clear();
+        }
     }
 }
