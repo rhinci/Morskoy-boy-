@@ -322,25 +322,20 @@ namespace SeaBattle.Models
 
         private void SaveGameLog()
         {
-            // Пока заглушка
-            AddToLog("Лог игры сохранен (заглушка)");
+            string fileName = $"SeaBattle_Log_{DateTime.Now:yyyyMMdd_HHmmss}.json";
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName);
+
+            bool saved = JsonLogger.SaveGameLog(_gameLog, filePath);
+
+            if (saved)
+            {
+                AddToLog($"Лог игры сохранен: {filePath}");
+            }
+            else
+            {
+                AddToLog("Не удалось сохранить лог игры");
+            }
         }
-
-        public void ResetGame()
-        {
-            _myBoard.ResetBoard();
-            _enemyBoard.ResetBoard();
-            _gameLog.Clear();
-
-            CurrentGameState = GameState.Placement;
-            IsMyTurn = false;
-
-            _networkManager.Disconnect();
-
-            AddToLog("Игра сброшена. Начните новую партию.");
-            OnBoardUpdated();
-        }
-
         // Методы для вызова событий
 
         private void OnGameStateChanged()
