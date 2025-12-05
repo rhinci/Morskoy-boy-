@@ -14,6 +14,9 @@ namespace SeaBattle.Models
         private bool _isHost;
         private List<string> _gameLog;
 
+        private NetworkManager _networkManager;
+        private string _playerName;
+
         public event Action GameStateChanged; 
         public event Action BoardUpdated;
         public event Action<string> MessageReceived;
@@ -29,8 +32,22 @@ namespace SeaBattle.Models
             _gameLog = new List<string>();
             _isHost = false;
 
+            _networkManager = new NetworkManager();
+            _playerName = "Player_" + new Random().Next(1000, 9999);
+
+            SubscribeToNetworkEvents();
+
             AddToLog("Игра создана, можно начать расстановку кораблей");
         }
+
+        private void SubscribeToNetworkEvents()
+        {
+            _networkManager.MessageReceived += OnNetworkMessageReceived;
+            _networkManager.Connected += OnNetworkConnected;
+            _networkManager.Disconnected += OnNetworkDisconnected;
+            _networkManager.ErrorOccurred += OnNetworkError;
+        }
+
 
         public GameState CurrentGameState
         {
@@ -171,11 +188,21 @@ namespace SeaBattle.Models
 
             AddToLog($"Выстрел по ({x},{y})...");
 
-            Random random = new Random();
-            CellState[] possibleResults = { CellState.Miss, CellState.Hit };
-            CellState simulatedResult = possibleResults[random.Next(2)];
+            var shotMessage = GameMessage.CreateShotMessage(x, y);
+            shotMessage.Sender = _playerName;
 
-            return ProcessShotResult(x, y, simulatedResult);
+            bool sent = _networkManager.SendMessage(shotMessage);
+
+            if (sent)
+            {
+                AddToLog("Ожидаем ответа противника...");
+                return CellState.Empty; // Временное значение
+            }
+            else
+            {
+                AddToLog("Не удалось отправить выстрел!");
+                return CellState.Empty;
+            }
         }
 
         public CellState ProcessShotResult(int x, int y, CellState result)
@@ -209,6 +236,10 @@ namespace SeaBattle.Models
 
             if (_enemyBoard.AllShipsSunk)
             {
+                var gameOverMessage = GameMessage.CreateGameOverMessage(false);
+                gameOverMessage.Sender = _playerName;
+                _networkManager.SendMessage(gameOverMessage);
+
                 EndGame(true);
             }
 
@@ -266,8 +297,14 @@ namespace SeaBattle.Models
                 AddToLog("ПОРАЖЕНИЕ");
             }
 
+            Task.Delay(5000).ContinueWith(_ =>
+            {
+                _networkManager.Disconnect();
+            });
+
             SaveGameLog();
         }
+
 
         private void AddToLog(string message)
         {
@@ -298,6 +335,8 @@ namespace SeaBattle.Models
             CurrentGameState = GameState.Placement;
             IsMyTurn = false;
 
+            _networkManager.Disconnect();
+
             AddToLog("Игра сброшена. Начните новую партию.");
             OnBoardUpdated();
         }
@@ -323,6 +362,193 @@ namespace SeaBattle.Models
         {
             AddToLog($"Загружаем игру из {filePath} (заглушка)");
             ResetGame();
+        }
+
+
+        // методы сетевого взаимодействия
+
+
+        public void StartAsHost(int port = 12345)
+        {
+            IsHost = true;
+
+            bool serverStarted = _networkManager.StartServer(port);
+
+            if (serverStarted)
+            {
+                AddToLog($"Сервер запущен на порту {port}. Ожидаем подключения...");
+                CurrentGameState = GameState.WaitingForConnection;
+            }
+            else
+            {
+                AddToLog("Не удалось запустить сервер");
+            }
+        }
+
+        public void ConnectAsClient(string ipAddress, int port = 12345)
+        {
+            IsHost = false;
+
+            AddToLog($"Подключаемся к {ipAddress}:{port}...");
+            CurrentGameState = GameState.WaitingForConnection;
+
+            bool connected = _networkManager.ConnectToServer(ipAddress, port);
+
+            if (!connected)
+            {
+                AddToLog("Не удалось подключиться к серверу");
+                CurrentGameState = GameState.Placement; 
+            }
+        }
+
+        private void OnNetworkMessageReceived(GameMessage message)
+        {
+            AddToLog($"Получено сообщение: {message.MessageType}");
+
+            switch (message.MessageType)
+            {
+                case MessageType.Connect:
+                    HandleConnectMessage(message);
+                    break;
+
+                case MessageType.StartGame:
+                    HandleStartGameMessage(message);
+                    break;
+
+                case MessageType.Shot:
+                    HandleShotMessage(message);
+                    break;
+
+                case MessageType.ShotResult:
+                    HandleShotResultMessage(message);
+                    break;
+
+                case MessageType.GameOver:
+                    HandleGameOverMessage(message);
+                    break;
+
+                case MessageType.Chat:
+                    HandleChatMessage(message);
+                    break;
+
+                default:
+                    AddToLog($"Неизвестный тип сообщения: {message.MessageType}");
+                    break;
+            }
+        }
+
+        private void HandleConnectMessage(GameMessage message)
+        {
+            string opponentName = message.GetData("playerName", "Opponent");
+            AddToLog($"{opponentName} подключился к игре!");
+
+            if (IsHost)
+            {
+
+                Random random = new Random();
+                bool opponentGoesFirst = random.Next(2) == 0;
+
+                var startMessage = GameMessage.CreateStartGameMessage(!opponentGoesFirst);
+                startMessage.Sender = _playerName;
+                _networkManager.SendMessage(startMessage);
+
+                StartGame(!opponentGoesFirst);
+            }
+        }
+
+        private void HandleStartGameMessage(GameMessage message)
+        {
+            bool iGoFirst = message.GetData("youGoFirst", false);
+            StartGame(iGoFirst);
+        }
+
+        private void HandleShotMessage(GameMessage message)
+        {
+            int x = message.GetData("x", -1);
+            int y = message.GetData("y", -1);
+
+            if (x >= 0 && y >= 0)
+            {
+
+                CellState result = ProcessEnemyShot(x, y);
+
+                var resultMessage = GameMessage.CreateShotResultMessage(x, y, result);
+                resultMessage.Sender = _playerName;
+                _networkManager.SendMessage(resultMessage);
+            }
+        }
+
+        private void HandleShotResultMessage(GameMessage message)
+        {
+            int x = message.GetData("x", -1);
+            int y = message.GetData("y", -1);
+            string resultStr = message.GetData("result", "Miss");
+
+            CellState result = CellState.Miss;
+            if (Enum.TryParse(resultStr, out CellState parsedResult))
+            {
+                result = parsedResult;
+            }
+
+            ProcessShotResult(x, y, result);
+        }
+
+        private void HandleGameOverMessage(GameMessage message)
+        {
+            bool iWon = message.GetData("youWon", false);
+            EndGame(iWon);
+        }
+
+        private void HandleChatMessage(GameMessage message)
+        {
+            string text = message.GetData("text", "");
+            string sender = message.Sender;
+
+            if (!string.IsNullOrEmpty(text))
+            {
+                AddToLog($"{sender}: {text}");
+            }
+        }
+
+        private void OnNetworkConnected()
+        {
+            AddToLog("Сетевое соединение установлено!");
+
+            var connectMessage = GameMessage.CreateConnectMessage(_playerName);
+            connectMessage.Sender = _playerName;
+            _networkManager.SendMessage(connectMessage);
+        }
+
+        private void OnNetworkDisconnected()
+        {
+            AddToLog("Сетевое соединение разорвано!");
+
+            if (CurrentGameState != GameState.GameOver)
+            {
+                EndGame(false);
+            }
+        }
+
+        private void OnNetworkError(string error)
+        {
+            AddToLog($"Сетевая ошибка: {error}");
+        }
+
+        public void SendChatMessage(string text)
+        {
+            if (!string.IsNullOrEmpty(text))
+            {
+                var chatMessage = GameMessage.CreateChatMessage(text);
+                chatMessage.Sender = _playerName;
+                _networkManager.SendMessage(chatMessage);
+
+                AddToLog($"Вы: {text}");
+            }
+        }
+
+        public string GetLocalIP()
+        {
+            return _networkManager.LocalIP;
         }
     }
 }
