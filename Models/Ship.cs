@@ -22,12 +22,31 @@ namespace SeaBattle.Models
 
         public bool IsSunk
         {
-            get { return _hits.Count == _size; }
+            get { return _hits.Count >= _size; }
         }
 
         public bool CheckHit(int x, int y)
         {
+            foreach (Point position in _positions)
+            {
+                if (position.X == x && position.Y == y)
+                {
+                    foreach (Point hit in _hits)
+                    {
+                        if (hit.X == x && hit.Y == y)
+                            return false;
+                    }
+
+                    _hits.Add(new Point(x, y));
+                    return true;
+                }
+            }
             return false;
+        }
+
+        public void ClearPositions()
+        {
+            _positions.Clear();
         }
     }
 }
