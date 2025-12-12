@@ -41,7 +41,6 @@ namespace SeaBattle.Models
                     return new List<string>();
 
                 string json = File.ReadAllText(filePath);
-
                 var logData = JsonSerializer.Deserialize<GameLogData>(json);
 
                 return new List<string>(logData.LogEntries);

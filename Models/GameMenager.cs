@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using SeaBattle.Enums;
 using SeaBattle.Models;
+using SeaBattle.Network;
 
 namespace SeaBattle.Models
 {
@@ -17,7 +20,7 @@ namespace SeaBattle.Models
         private NetworkManager _networkManager;
         private string _playerName;
 
-        public event Action GameStateChanged; 
+        public event Action GameStateChanged;
         public event Action BoardUpdated;
         public event Action<string> MessageReceived;
 
@@ -48,7 +51,6 @@ namespace SeaBattle.Models
             _networkManager.ErrorOccurred += OnNetworkError;
         }
 
-
         public GameState CurrentGameState
         {
             get { return _gameState; }
@@ -75,29 +77,48 @@ namespace SeaBattle.Models
         public bool IsHost
         {
             get { return _isHost; }
-            set { _isHost = value; }
+            private set { _isHost = value; }
         }
 
         public GameBoard MyBoard { get { return _myBoard; } }
-
         public GameBoard EnemyBoard { get { return _enemyBoard; } }
-
         public List<string> GameLog { get { return _gameLog; } }
 
-        public void StartAsHost()
+        // УДАЛИ СТАРЫЕ МЕТОДЫ StartAsHost() и ConnectAsClient() без параметров!
+        // Оставь только сетевые версии ниже
+
+        public void StartAsHost(int port = 12345)
         {
             IsHost = true;
-            AddToLog("Вы создали игру, ожидаем подключения противника");
-            CurrentGameState = GameState.WaitingForConnection;
+
+            bool serverStarted = _networkManager.StartServer(port);
+
+            if (serverStarted)
+            {
+                AddToLog($"Сервер запущен на порту {port}. Ожидаем подключения...");
+                CurrentGameState = GameState.WaitingForConnection;
+            }
+            else
+            {
+                AddToLog("Не удалось запустить сервер");
+                CurrentGameState = GameState.Placement;
+            }
         }
 
-        public void ConnectAsClient(string ipAddress, int port)
+        public void ConnectAsClient(string ipAddress, int port = 12345)
         {
             IsHost = false;
+
             AddToLog($"Подключаемся к {ipAddress}:{port}...");
             CurrentGameState = GameState.WaitingForConnection;
 
-            // Пока заглушка
+            bool connected = _networkManager.ConnectToServer(ipAddress, port);
+
+            if (!connected)
+            {
+                AddToLog("Не удалось подключиться к серверу");
+                CurrentGameState = GameState.Placement;
+            }
         }
 
         public void StartGame(bool iGoFirst)
@@ -122,7 +143,6 @@ namespace SeaBattle.Models
 
         public bool PlaceShip(int size, int startX, int startY, bool isHorizontal)
         {
-
             if (CurrentGameState != GameState.Placement)
             {
                 AddToLog("Сейчас нельзя расставлять корабли, игра уже началась");
@@ -130,14 +150,12 @@ namespace SeaBattle.Models
             }
 
             Ship ship = new Ship(size);
-
             bool success = _myBoard.PlaceShip(ship, startX, startY, isHorizontal);
 
             if (success)
             {
                 AddToLog($"Корабль размером {size} размещен на ({startX},{startY})");
                 OnBoardUpdated();
-
                 CheckIfAllShipsPlaced();
             }
             else
@@ -156,16 +174,15 @@ namespace SeaBattle.Models
             _myBoard.AutoPlaceAllShips();
             AddToLog("Все корабли расставлены автоматически");
             OnBoardUpdated();
-
             CheckIfAllShipsPlaced();
         }
 
         private void CheckIfAllShipsPlaced()
         {
-
-            if (_myBoard.Ships.Count >= 10) //пока заглушка
+            if (_myBoard.Ships.Count >= 10)
             {
                 AddToLog("Все корабли расставлены! Готовы к игре.");
+                // В реальной игре здесь можно отправить сообщение противнику
             }
         }
 
@@ -190,13 +207,12 @@ namespace SeaBattle.Models
 
             var shotMessage = GameMessage.CreateShotMessage(x, y);
             shotMessage.Sender = _playerName;
-
             bool sent = _networkManager.SendMessage(shotMessage);
 
             if (sent)
             {
                 AddToLog("Ожидаем ответа противника...");
-                return CellState.Empty; // Временное значение
+                return CellState.Empty;
             }
             else
             {
@@ -239,7 +255,6 @@ namespace SeaBattle.Models
                 var gameOverMessage = GameMessage.CreateGameOverMessage(false);
                 gameOverMessage.Sender = _playerName;
                 _networkManager.SendMessage(gameOverMessage);
-
                 EndGame(true);
             }
 
@@ -249,13 +264,11 @@ namespace SeaBattle.Models
         public CellState ProcessEnemyShot(int x, int y)
         {
             AddToLog($"Противник стреляет по ({x},{y})...");
-
             CellState result = _myBoard.ReceiveShot(x, y);
 
             if (result == CellState.Miss)
             {
                 AddToLog("Противник промахнулся!");
-
                 IsMyTurn = true;
                 CurrentGameState = GameState.MyTurn;
             }
@@ -269,7 +282,6 @@ namespace SeaBattle.Models
                 {
                     AddToLog("Противник попал!");
                 }
-
                 IsMyTurn = false;
                 CurrentGameState = GameState.EnemyTurn;
             }
@@ -290,13 +302,14 @@ namespace SeaBattle.Models
 
             if (iWon)
             {
-                AddToLog("ПОБЕДА");
+                AddToLog("ПОБЕДА! Вы уничтожили все корабли противника!");
             }
             else
             {
-                AddToLog("ПОРАЖЕНИЕ");
+                AddToLog("ПОРАЖЕНИЕ! Все ваши корабли потоплены.");
             }
 
+            // Отключаемся через 5 секунд
             Task.Delay(5000).ContinueWith(_ =>
             {
                 _networkManager.Disconnect();
@@ -304,7 +317,6 @@ namespace SeaBattle.Models
 
             SaveGameLog();
         }
-
 
         private void AddToLog(string message)
         {
@@ -336,66 +348,40 @@ namespace SeaBattle.Models
                 AddToLog("Не удалось сохранить лог игры");
             }
         }
-        // Методы для вызова событий
 
-        private void OnGameStateChanged()
+        // ДОБАВЬ ЭТОТ МЕТОД!
+        public void ResetGame()
         {
-            GameStateChanged?.Invoke();
-        }
+            _myBoard.ResetBoard();
+            _enemyBoard.ResetBoard();
+            _gameLog.Clear();
 
-        private void OnBoardUpdated()
-        {
-            BoardUpdated?.Invoke();
-        }
+            CurrentGameState = GameState.Placement;
+            IsMyTurn = false;
 
-        private void OnMessageReceived(string message)
-        {
-            MessageReceived?.Invoke(message);
+            _networkManager.Disconnect();
+
+            AddToLog("Игра сброшена. Начните новую партию.");
+            OnBoardUpdated();
         }
 
         public void LoadGameFromLog(string filePath)
         {
-            AddToLog($"Загружаем игру из {filePath} (заглушка)");
-            ResetGame();
-        }
+            AddToLog($"Загружаем игру из {filePath}");
+            var loadedLog = JsonLogger.LoadGameLog(filePath);
 
-
-        // методы сетевого взаимодействия
-
-
-        public void StartAsHost(int port = 12345)
-        {
-            IsHost = true;
-
-            bool serverStarted = _networkManager.StartServer(port);
-
-            if (serverStarted)
+            if (loadedLog.Count > 0)
             {
-                AddToLog($"Сервер запущен на порту {port}. Ожидаем подключения...");
-                CurrentGameState = GameState.WaitingForConnection;
+                _gameLog = loadedLog;
+                AddToLog("Лог игры загружен. Режим просмотра (заглушка)");
             }
             else
             {
-                AddToLog("Не удалось запустить сервер");
+                AddToLog("Не удалось загрузить лог игры");
             }
         }
 
-        public void ConnectAsClient(string ipAddress, int port = 12345)
-        {
-            IsHost = false;
-
-            AddToLog($"Подключаемся к {ipAddress}:{port}...");
-            CurrentGameState = GameState.WaitingForConnection;
-
-            bool connected = _networkManager.ConnectToServer(ipAddress, port);
-
-            if (!connected)
-            {
-                AddToLog("Не удалось подключиться к серверу");
-                CurrentGameState = GameState.Placement; 
-            }
-        }
-
+        // Сетевые методы обработки сообщений
         private void OnNetworkMessageReceived(GameMessage message)
         {
             AddToLog($"Получено сообщение: {message.MessageType}");
@@ -405,27 +391,21 @@ namespace SeaBattle.Models
                 case MessageType.Connect:
                     HandleConnectMessage(message);
                     break;
-
                 case MessageType.StartGame:
                     HandleStartGameMessage(message);
                     break;
-
                 case MessageType.Shot:
                     HandleShotMessage(message);
                     break;
-
                 case MessageType.ShotResult:
                     HandleShotResultMessage(message);
                     break;
-
                 case MessageType.GameOver:
                     HandleGameOverMessage(message);
                     break;
-
                 case MessageType.Chat:
                     HandleChatMessage(message);
                     break;
-
                 default:
                     AddToLog($"Неизвестный тип сообщения: {message.MessageType}");
                     break;
@@ -439,7 +419,6 @@ namespace SeaBattle.Models
 
             if (IsHost)
             {
-
                 Random random = new Random();
                 bool opponentGoesFirst = random.Next(2) == 0;
 
@@ -464,9 +443,7 @@ namespace SeaBattle.Models
 
             if (x >= 0 && y >= 0)
             {
-
                 CellState result = ProcessEnemyShot(x, y);
-
                 var resultMessage = GameMessage.CreateShotResultMessage(x, y, result);
                 resultMessage.Sender = _playerName;
                 _networkManager.SendMessage(resultMessage);
@@ -508,7 +485,6 @@ namespace SeaBattle.Models
         private void OnNetworkConnected()
         {
             AddToLog("Сетевое соединение установлено!");
-
             var connectMessage = GameMessage.CreateConnectMessage(_playerName);
             connectMessage.Sender = _playerName;
             _networkManager.SendMessage(connectMessage);
@@ -517,7 +493,6 @@ namespace SeaBattle.Models
         private void OnNetworkDisconnected()
         {
             AddToLog("Сетевое соединение разорвано!");
-
             if (CurrentGameState != GameState.GameOver)
             {
                 EndGame(false);
@@ -536,7 +511,6 @@ namespace SeaBattle.Models
                 var chatMessage = GameMessage.CreateChatMessage(text);
                 chatMessage.Sender = _playerName;
                 _networkManager.SendMessage(chatMessage);
-
                 AddToLog($"Вы: {text}");
             }
         }
@@ -544,6 +518,22 @@ namespace SeaBattle.Models
         public string GetLocalIP()
         {
             return _networkManager.LocalIP;
+        }
+
+        // Методы для вызова событий
+        private void OnGameStateChanged()
+        {
+            GameStateChanged?.Invoke();
+        }
+
+        private void OnBoardUpdated()
+        {
+            BoardUpdated?.Invoke();
+        }
+
+        private void OnMessageReceived(string message)
+        {
+            MessageReceived?.Invoke(message);
         }
     }
 }

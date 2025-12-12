@@ -8,8 +8,8 @@ namespace SeaBattle.Models
 {
     public class GameBoard
     {
-        private CellState[,] _cells; 
-        private List<Ship> _ships; 
+        private CellState[,] _cells;
+        private List<Ship> _ships;
         private bool _allShipsPlaced;
         private bool _allShipsSunk;
 
@@ -28,10 +28,13 @@ namespace SeaBattle.Models
             }
 
             _ships = new List<Ship>();
-
             _allShipsPlaced = false;
             _allShipsSunk = false;
         }
+
+        public List<Ship> Ships { get { return _ships; } }
+        public bool AllShipsPlaced { get { return _allShipsPlaced; } }
+        public bool AllShipsSunk { get { return _allShipsSunk; } }
 
         public CellState GetCellState(int x, int y)
         {
@@ -39,19 +42,6 @@ namespace SeaBattle.Models
                 return CellState.Empty;
 
             return _cells[x, y];
-        }
-
-        public List<Ship> Ships { get { return _ships; } }
-
-
-        public bool AllShipsPlaced
-        {
-            get { return _allShipsPlaced; }
-        }
-
-        public bool AllShipsSunk
-        {
-            get { return _allShipsSunk; }
         }
 
         public bool IsValidShipPlacement(Ship ship, int startX, int startY, bool isHorizontal)
@@ -100,7 +90,7 @@ namespace SeaBattle.Models
             if (!IsValidShipPlacement(ship, startX, startY, isHorizontal))
                 return false;
 
-            ship.Positions.Clear();
+            ship.ClearPositions();
 
             for (int i = 0; i < ship.Size; i++)
             {
@@ -108,12 +98,10 @@ namespace SeaBattle.Models
                 int y = isHorizontal ? startY : startY + i;
 
                 _cells[x, y] = CellState.Ship;
-
                 ship.Positions.Add(new Point(x, y));
             }
 
             _ships.Add(ship);
-
             return true;
         }
 
@@ -147,7 +135,7 @@ namespace SeaBattle.Models
                     return CellState.Hit;
 
                 default:
-                    return currentState; 
+                    return currentState;
             }
         }
 
@@ -170,7 +158,6 @@ namespace SeaBattle.Models
         {
             foreach (Point position in ship.Positions)
             {
-
                 for (int dx = -1; dx <= 1; dx++)
                 {
                     for (int dy = -1; dy <= 1; dy++)
@@ -212,7 +199,6 @@ namespace SeaBattle.Models
 
         public void AutoPlaceAllShips()
         {
-
             _ships.Clear();
             for (int x = 0; x < BOARD_SIZE; x++)
             {
@@ -252,7 +238,6 @@ namespace SeaBattle.Models
             _allShipsPlaced = true;
         }
 
-
         public void ResetBoard()
         {
             for (int x = 0; x < BOARD_SIZE; x++)
@@ -268,11 +253,5 @@ namespace SeaBattle.Models
             _allShipsPlaced = false;
             _allShipsSunk = false;
         }
-
-
-        foreach (Ship ship in _ships)
-    {
-        ship.Reset();
     }
-}
 }
